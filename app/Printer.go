@@ -9,7 +9,6 @@ import (
 
 // this method is responsible for printing the entire list of array/string functions
 func printList(list map[string]models.Ws) {
-	color.Cyan.Printf("%-30s %12s\n", "Array Functions", "Description")
 	println()
 	for _, v := range list {
 		color.FgYellow.Printf("%-30s %10s\n", v.Name, v.Description)

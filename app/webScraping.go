@@ -59,7 +59,7 @@ func parseHtmlData(data *goquery.Document) map[string]models.Ws {
 					}
 				})
 				d := strings.Split(selection.Text(), "—")
-				ws.Name, ws.Description = d[0], d[1]
+				ws.Name, ws.Description = d[0], standardizeSpaces(d[1])
 
 				wsList[strings.TrimSpace(ws.Name)] = ws
 			}
