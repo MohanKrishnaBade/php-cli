@@ -9,6 +9,3 @@ type Content struct {
 	Data   []string
 }
 
-func NewContent() map[string][]string {
-	return make(map[string][]string)
-}

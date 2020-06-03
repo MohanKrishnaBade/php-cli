@@ -15,16 +15,22 @@ const (
 	stringFuncUrl = urlHeader + "book.strings.php"
 )
 
+//  method that initiates the process
 func Scraper(args []string) {
-	list := process(args)
+	list := parseHtmlData(makeARequest(args[0], true))
 	if len(args) == 2 {
-		funcDesc(list, args[1])
+
+		if v, ok := list[args[1]]; ok {
+			crawler(v.Url)
+		} else {
+			color.FgRed.Printf("%s(%s)\n", "we couldn't find the function name.", args[1])
+		}
 	} else {
 		printList(list)
 	}
-
 }
 
+// strategy methods to decide which one to call
 func strategy(firstArg string) string {
 
 	switch {
@@ -37,27 +43,10 @@ func strategy(firstArg string) string {
 	}
 }
 
-func process(args []string) map[string]models.Ws {
+// prepare a list from html data
+func parseHtmlData(data *goquery.Document) map[string]models.Ws {
 	wsList := make(map[string]models.Ws)
-
-	// Request the HTML page.
-	res, err := http.Get(strategy(args[0]))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
-	}
-
-	// Load the HTML document
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Find items
-	doc.Find(".chunklist_children ").Each(func(i int, s *goquery.Selection) {
+	data.Find(".chunklist_children ").Each(func(i int, s *goquery.Selection) {
 
 		s.Find("li").Each(func(i int, selection *goquery.Selection) {
 
@@ -77,13 +66,28 @@ func process(args []string) map[string]models.Ws {
 
 		})
 	})
+
 	return wsList
 }
 
-func printList(list map[string]models.Ws) {
-	color.Cyan.Printf("%-30s %12s\n", "Array Functions", "Description")
-	println()
-	for _, v := range list {
-		color.FgYellow.Printf("%-30s %10s\n", v.Name, v.Description)
+// this function is responsible for making http requests.
+func makeARequest(url string, useStrategy bool) *goquery.Document {
+	if useStrategy {
+		url = strategy(url)
 	}
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	}
+
+	// Load the HTML document
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return doc
 }
