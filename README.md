@@ -17,4 +17,4 @@ it's a cli tool that's written in golang for php documentation.
    
 # sample output Images.
 ![Alt text](asserts/list.png?raw=true "Title")
-![Alt text](asserts/funcDesc.png?raw=true "Title")
+![Alt text](asserts/func.png?raw=true "Title")
