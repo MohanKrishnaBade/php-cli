@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/enescakir/emoji"
 	"github.com/gookit/color"
 	"github.com/jedib0t/go-pretty/table"
 	"github.com/jedib0t/go-pretty/text"
@@ -48,12 +49,15 @@ func PrintTable(data []models.Example) {
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"id", "Example Code", "output"})
 	for k, v := range data {
+		if v.Output == "" {
+			v.Output = fmt.Sprintf("%v  %v", emoji.SlightlySmilingFace, emoji.ManTechnologist)
+		}
 		if k == 0 {
 			t.AppendRows([]table.Row{
-				{k + 1, formatCode(v.Code), v.Output},
+				{k + 1, v.Code, v.Output},
 			})
 		} else {
-			t.AppendRow([]interface{}{k + 1, formatCode(v.Code), v.Output})
+			t.AppendRow([]interface{}{k + 1, v.Code, v.Output})
 		}
 	}
 

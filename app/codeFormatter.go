@@ -5,14 +5,18 @@ import (
 )
 
 func formatCode(code string) string {
-	fs := strings.Replace(code, "<?php", "<?php\n", -1)
-	fs = strings.Replace(fs, "?>", "?>\n", -1)
-	fs = strings.Replace(fs, ";", ";\n", -1)
-	fs = strings.Replace(fs, "echo", "\necho", -1)
-	fs = strings.Replace(fs, "{", "{\n", -1)
-	fs = strings.Replace(fs, "function", "\nfunction", -1)
-	fs = strings.Replace(fs, "}?>", "}\n?>", -1)
-
+	fs := strings.NewReplacer(
+		"<?php", "<?php\n",
+		"?>", "?>\n",
+		";", ";\n",
+		"echo", "echo",
+		"{", "{\n",
+		//"function", "function",
+		"} ", "} \n",
+		"}$", "}\n$",
+		"}f", "}\nf",
+		"}v", "}\nv",
+	).Replace(code)
 	return fs
 }
 

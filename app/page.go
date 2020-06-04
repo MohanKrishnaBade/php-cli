@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/php-cli/models"
+	"jaytaylor.com/html2text"
 	"runtime"
 	"sync"
 )
@@ -54,7 +55,8 @@ func readFuncExamples(doc *goquery.Document, list *[]models.Example, wg *sync.Wa
 
 	doc.Find(".example").Each(func(i int, selection *goquery.Selection) {
 		example := models.Example{}
-		example.Code = standardizeSpaces(selection.Find(".phpcode").Text())
+		h, _ := selection.Find(".phpcode").Html()
+		example.Code, _ = html2text.FromString(h, html2text.Options{PrettyTables: true})
 		example.Output = selection.Find(".cdata").Text()
 		*list = append(*list, example)
 	})
