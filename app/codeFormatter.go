@@ -1,19 +1,19 @@
 package app
 
 import (
-	"github.com/gookit/color"
 	"strings"
 )
 
-func formatCode(code string) {
-	d := strings.Replace(code, "<?php", "\n<?php\n", -1)
-	d = strings.Replace(d, "?>", "?>\n", -1)
-	d = strings.Replace(d, ";", ";\n", -1)
-	d = strings.Replace(d, "echo", "\necho", -1)
-	d = strings.Replace(d, "{", "{\n", -1)
-	d = strings.Replace(d, "function", "\nfunction", -1)
-	d = strings.Replace(d, "}?>", "}\n?>", -1)
-	color.FgDarkGray.Println(d)
+func formatCode(code string) string {
+	fs := strings.Replace(code, "<?php", "<?php\n", -1)
+	fs = strings.Replace(fs, "?>", "?>\n", -1)
+	fs = strings.Replace(fs, ";", ";\n", -1)
+	fs = strings.Replace(fs, "echo", "\necho", -1)
+	fs = strings.Replace(fs, "{", "{\n", -1)
+	fs = strings.Replace(fs, "function", "\nfunction", -1)
+	fs = strings.Replace(fs, "}?>", "}\n?>", -1)
+
+	return fs
 }
 
 func standardizeSpaces(s string) string {

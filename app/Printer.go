@@ -3,7 +3,10 @@ package app
 import (
 	"fmt"
 	"github.com/gookit/color"
+	"github.com/jedib0t/go-pretty/table"
+	"github.com/jedib0t/go-pretty/text"
 	"github.com/php-cli/models"
+	"os"
 	"strings"
 )
 
@@ -30,14 +33,37 @@ func printPageContent(page models.Page) {
 		if len(v.Data) > 0 {
 			color.FgGreen.Printf("%-30s\n", v.Header)
 			color.FgLightWhite.Println(strings.Repeat("-", len(v.Header)+1))
+
 			for _, line := range v.Data {
-				if v.Header == "Examples" {
-					formatCode(line)
-				} else {
-					fmt.Printf("%s%s\n", "●  ", line)
-				}
+				fmt.Printf("%s%s\n", "●  ", line)
 			}
 			fmt.Println()
 		}
 	}
+}
+
+func PrintTable(data []models.Example) {
+	color.FgGreen.Printf("%-30s\n", "Examples")
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"id", "Example Code", "output"})
+	for k, v := range data {
+		if k == 0 {
+			t.AppendRows([]table.Row{
+				{k + 1, formatCode(v.Code), v.Output},
+			})
+		} else {
+			t.AppendRow([]interface{}{k + 1, formatCode(v.Code), v.Output})
+		}
+	}
+
+	t.SetStyle(table.StyleLight)
+	t.Style().Format.Footer = text.FormatLower
+	t.Style().Options.DrawBorder = true
+	t.Style().Options.SeparateRows = true
+	t.Render()
+
+	//t.SetStyle(table.StyleLight)
+	//t.Style().Options.SeparateRows=true
+	//t.Style().Options.DrawBorder = false
 }

@@ -7,8 +7,11 @@ import (
 	"sync"
 )
 
-var page models.Page
-var wg sync.WaitGroup
+var (
+	page         models.Page
+	wg           sync.WaitGroup
+	examplesList []models.Example
+)
 
 func crawler(url string) {
 	doc := makeARequest(url, false)
@@ -16,11 +19,12 @@ func crawler(url string) {
 	wg.Add(5)
 	go readFuncDesc(doc, &page.Contents, &wg)
 	go readFuncReturnValues(doc, &page.Contents, &wg)
-	go readFuncExamples(doc, &page.Contents, &wg)
+	go readFuncExamples(doc, &examplesList, &wg)
 	go readFuncNotes(doc, &page.Contents, &wg)
 	go readFuncParameters(doc, &page.Contents, &wg)
 	wg.Wait()
 	printPageContent(page)
+	PrintTable(examplesList)
 }
 
 func readFuncDesc(doc *goquery.Document, list *[]models.Content, wg *sync.WaitGroup) {
@@ -45,14 +49,15 @@ func readFuncReturnValues(doc *goquery.Document, list *[]models.Content, wg *syn
 	*list = append(*list, content)
 }
 
-func readFuncExamples(doc *goquery.Document, list *[]models.Content, wg *sync.WaitGroup) {
+func readFuncExamples(doc *goquery.Document, list *[]models.Example, wg *sync.WaitGroup) {
 	defer wg.Done()
-	content := models.Content{}
-	doc.Find(".examples").Each(func(i int, selection *goquery.Selection) {
-		content.Header = selection.Find("h3").Text()
-		content.Data = append(content.Data, standardizeSpaces(selection.Find("code").Text()))
+
+	doc.Find(".example").Each(func(i int, selection *goquery.Selection) {
+		example := models.Example{}
+		example.Code = standardizeSpaces(selection.Find(".phpcode").Text())
+		example.Output = selection.Find(".cdata").Text()
+		*list = append(*list, example)
 	})
-	*list = append(*list, content)
 }
 
 func readFuncNotes(doc *goquery.Document, list *[]models.Content, wg *sync.WaitGroup) {

@@ -9,3 +9,7 @@ type Content struct {
 	Data   []string
 }
 
+type Example struct {
+	Code   string
+	Output string
+}
