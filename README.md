@@ -1,6 +1,6 @@
 # php-cli
 
-it's a cli tool that's written in golang for php documentation.
+it's a cli tool for php documentation.
 
 # How to use
 1) find an executable file depend upon your current operating system.
