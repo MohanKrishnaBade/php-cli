@@ -5,6 +5,5 @@ import (
 )
 
 func main() {
-	//app.Format("strrev() <?phpecho strrev(\"Hello world!\"); // outputs \"!dlrow olleH\"?> <?phpecho strrev(\"Hello world!\"); // outputs \"!dlrow olleH\"?>")
 	cmd.Execute()
 }

@@ -9,9 +9,8 @@ import (
 )
 
 var (
-	page         models.Page
-	wg           sync.WaitGroup
-	examplesList []models.Example
+	page models.Page
+	wg   sync.WaitGroup
 )
 
 func crawler(url string) {
@@ -20,12 +19,12 @@ func crawler(url string) {
 	wg.Add(5)
 	go readFuncDesc(doc, &page.Contents, &wg)
 	go readFuncReturnValues(doc, &page.Contents, &wg)
-	go readFuncExamples(doc, &examplesList, &wg)
+	go readFuncExamples(doc, &page.Examples, &wg)
 	go readFuncNotes(doc, &page.Contents, &wg)
 	go readFuncParameters(doc, &page.Contents, &wg)
 	wg.Wait()
 	printPageContent(page)
-	PrintTable(examplesList)
+	PrintTable(page.Examples)
 }
 
 func readFuncDesc(doc *goquery.Document, list *[]models.Content, wg *sync.WaitGroup) {
